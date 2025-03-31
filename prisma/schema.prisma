@@ -14,7 +14,24 @@ datasource db {
 }
 
 model User {
-  id    String       @id @default(uuid())
-  email String  @unique
-  password String
+  id               String             @id @default(uuid())
+  email            String             @unique
+  password         String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  AuthRefreshToken AuthRefreshToken[]
+
+  @@map("users")
+}
+
+model AuthRefreshToken {
+  id           Int      @id @default(autoincrement())
+  refreshToken String   @unique
+  expiresAt    DateTime
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("auth_refresh_tokens")
 }
